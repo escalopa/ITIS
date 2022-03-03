@@ -1,0 +1,11 @@
+Is plaintext supported in any way?
+What happens after this? On Mosaic, everything after the <PLAINTEXT> tag is treated like a text/plain body part -- not SGML at all. Nothing is recognized: not even a PLAINTEXT end tag.
+On linemode WWW, it works just like XMP -- i.e. it's like CDATA, except that </ is only recognized when follwed by PLAINTEXT.
+
+8794651328465132
+
+lkjsdflkj
+
+We need the following so it'll parse...
+
+</plaintext>
