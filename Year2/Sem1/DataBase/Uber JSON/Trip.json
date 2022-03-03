@@ -1,0 +1,26 @@
+{
+  "id": 3,
+  "client": {
+    "id": 6,
+    "firstName": "Client6",
+    "lastName": "Family6",
+    "phone": "768327652",
+    "birthday": "6 6 206",
+    "rating": 4
+  },
+  "driver": {
+    "id": 19,
+    "firstName": "person19",
+    "lastName": "family19",
+    "phone": "+71974519",
+    "car": {
+      "type": "car5",
+      "model": "model5"
+    },
+    "rating": 0,
+    "yearOfExperience": 2
+  },
+  "meetingPoint": "Location755",
+  "destination": "Location6716",
+  "price": 2397
+}
