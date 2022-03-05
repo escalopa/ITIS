@@ -4,7 +4,6 @@ import task1.PathScan;
 import task2.annotations.Autowire;
 import task2.annotations.Component;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -28,19 +27,22 @@ public class Context {
     private void readClasses(String path) {
         try {
             List<Class<?>> classList = PathScan.find(path);
+
             for (Class<?> clazz : classList) {
-                //Create instance of all classes
                 if (clazz.isAnnotationPresent(Component.class)) {
-                    Object object = clazz.getConstructor().newInstance();
-                    objectsMap.putIfAbsent(clazz.getSimpleName(), object);
-                    for (Field field : clazz.getDeclaredFields()) {
-                        //Initialize fields that only has @Autowire
-                        if ((field.isAnnotationPresent(Autowire.class))) {
-                            field.setAccessible(true);
-                            //Initialize field in case it does not exist in advance
-                            objectsMap.putIfAbsent(field.getType().getSimpleName(), field.getType().getConstructor().newInstance());
-                            field.set(object, objectsMap.get(field.getType().getSimpleName()));
-                        }
+                    Object object = clazz.getDeclaredConstructor().newInstance();
+                    objectsMap.put(clazz.getSimpleName(), object);
+                }
+            }
+
+            for (Class<?> clazz : classList) {
+                for (Field field : clazz.getDeclaredFields()) {
+                    field.setAccessible(true);
+                    //Initialize fields that only has @Autowire
+                    if ((field.isAnnotationPresent(Autowire.class))) {
+                        //Initialize field in case it does not exist in advance
+                        objectsMap.putIfAbsent(clazz.getSimpleName(), field.getType().getDeclaredConstructor().newInstance());
+                        field.set(objectsMap.get(clazz.getSimpleName()), objectsMap.get(field.getType().getSimpleName()));
                     }
                 }
             }
