@@ -1,4 +1,4 @@
-package com.example.lab02.services;
+package com.example.lab02.utils;
 
 public class DefaultCommands {
 

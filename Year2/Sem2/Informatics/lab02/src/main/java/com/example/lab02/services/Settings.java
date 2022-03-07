@@ -4,7 +4,7 @@ import com.example.lab02.models.Admin;
 import com.example.lab02.models.User;
 import task2.annotations.Component;
 
-import static com.example.lab02.services.DefaultCommands.*;
+import static com.example.lab02.utils.DefaultCommands.*;
 
 @Component
 public class Settings {
