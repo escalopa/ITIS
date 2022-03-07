@@ -11,9 +11,7 @@ import java.util.List;
 
 public class Context {
 
-
     private final HashMap<String, Object> objectsMap;
-
 
     public Context(String path) {
         objectsMap = new HashMap<>();
