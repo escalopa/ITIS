@@ -7,6 +7,7 @@ import task2.annotations.Component;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class Context {
@@ -26,7 +27,7 @@ public class Context {
         for (Class<?> clazz : classList) {
             Entity entity = clazz.getAnnotation(Entity.class);
             if (entity != null) {
-                String tableName = entity.name().equals("") ? clazz.getSimpleName() : entity.name();
+                String tableName = entity.name().equals("") ? clazz.getSimpleName().toLowerCase(Locale.ROOT) : entity.name();
                 if (dbContext.tables.containsKey(tableName)) {
                     printValue(true, tableName);
                     for (Field field : clazz.getDeclaredFields()) {
@@ -34,7 +35,6 @@ public class Context {
                         if (field.isAnnotationPresent(Column.class) || field.isAnnotationPresent(Id.class))
                             fieldName = field.getName();
                         else if (field.isAnnotationPresent(ManyToOne.class) ||
-                                field.isAnnotationPresent(OneToMany.class) ||
                                 field.isAnnotationPresent(OneToOne.class))
                             fieldName = field.getName() + "_id";
                         printValue(dbContext.tables.get(tableName).contains(fieldName), "\t" + fieldName);
@@ -45,7 +45,6 @@ public class Context {
                 }
             }
         }
-        System.out.println();
     }
 
     private void printValue(boolean found, String msg) {
