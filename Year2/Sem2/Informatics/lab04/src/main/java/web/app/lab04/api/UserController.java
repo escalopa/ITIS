@@ -2,7 +2,9 @@ package web.app.lab04.api;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import web.app.lab04.dbService.MyEntityManagerFactory;
 import web.app.lab04.models.User;
 
 import javax.persistence.EntityManager;
@@ -17,15 +19,18 @@ public class UserController {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    private MyEntityManagerFactory myEntityManagerFactory;
+
+
     @GetMapping(path = {"/", ""}, produces = "application/json")
     public List<User> getAllUser() {
-        List<User> users = entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
-        return users;
+        return entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public User getUser(@PathVariable long id) {
-        return entityManager.find(User.class, id);
+        return myEntityManagerFactory.getEntityManager().find(User.class, id);
     }
 
     @Transactional
@@ -33,7 +38,7 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         user.setSalt(RandomStringUtils.random(10, true, true));
         setUserPassword(user, user.getPassword());
-        entityManager.persist(user);
+        myEntityManagerFactory.getEntityManager().persist(user);
         return user;
     }
 
@@ -44,7 +49,7 @@ public class UserController {
         user.setId(originalUser.getId());
         user.setSalt(originalUser.getSalt());
         setUserPassword(user, user.getPassword());
-        entityManager.merge(user);
+        myEntityManagerFactory.getEntityManager().merge(user);
         return user;
     }
 
@@ -52,7 +57,7 @@ public class UserController {
     @DeleteMapping(path = "/delete/{id}", produces = "application/json")
     public long deleteUser(@PathVariable long id) {
         User User = entityManager.find(User.class, id);
-        entityManager.remove(User);
+        myEntityManagerFactory.getEntityManager().remove(User);
         return User.getId();
     }
 

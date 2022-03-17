@@ -1,10 +1,11 @@
 package web.app.lab04.models;
 
-import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Objects;
 
 @Getter
@@ -16,7 +17,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
     @Basic
     @Column(name = "username", nullable = true, length = 20)
     private String username;
@@ -30,7 +31,7 @@ public class User {
     @Column(name = "salt", nullable = true, length = 10)
     private String salt;
     @Basic
-    @Column(name = "password", nullable = true, length = 255)
+    @Column(name = "password_hash", nullable = true, length = 255)
     private String password;
 
     @Override
