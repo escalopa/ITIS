@@ -1,9 +1,7 @@
 package web.app.lab04.models;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -11,7 +9,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Entity(name ="users")
 public class User {
     @Id
@@ -33,6 +30,10 @@ public class User {
     @Basic
     @Column(name = "password_hash", nullable = true, length = 255)
     private String password;
+
+    @JsonIgnore
+    @ManyToOne
+    private Role role;
 
     @Override
     public boolean equals(Object o) {

@@ -2,9 +2,9 @@ package web.app.lab04.api;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import web.app.lab04.dbService.MyEntityManagerFactory;
+import web.app.lab04.dto.UserDto;
+import web.app.lab04.models.Role;
 import web.app.lab04.models.User;
 
 import javax.persistence.EntityManager;
@@ -19,26 +19,35 @@ public class UserController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    private MyEntityManagerFactory myEntityManagerFactory;
+//    @Autowired
+//    private MyEntityManagerFactory myEntityManagerFactory;
 
 
     @GetMapping(path = {"/", ""}, produces = "application/json")
     public List<User> getAllUser() {
-        return entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
+            return entityManager.createQuery("SELECT u FROM users u", User.class).getResultList();
     }
 
     @GetMapping(path = "/{id}", produces = "application/json")
     public User getUser(@PathVariable long id) {
-        return myEntityManagerFactory.getEntityManager().find(User.class, id);
+        return entityManager.find(User.class, id);
     }
 
     @Transactional
     @PostMapping(path = "/new", consumes = "application/json", produces = "application/json")
-    public User createUser(@RequestBody User user) {
-        user.setSalt(RandomStringUtils.random(10, true, true));
+    public User createUser(@RequestBody UserDto userDto) {
+        User user = new User();
+        String salt = RandomStringUtils.random(10, true, true);
+
+        Role role = entityManager.find(Role.class, userDto.getRole_id());
+        user.setRole(role);
+        user.setUsername(userDto.getUsername());
+        user.setFirstname(userDto.getFirstname());
+        user.setLastname(userDto.getLastname());
+        user.setPassword(userDto.getPassword());
+        user.setSalt(salt);
         setUserPassword(user, user.getPassword());
-        myEntityManagerFactory.getEntityManager().persist(user);
+        entityManager.persist(user);
         return user;
     }
 
@@ -49,7 +58,7 @@ public class UserController {
         user.setId(originalUser.getId());
         user.setSalt(originalUser.getSalt());
         setUserPassword(user, user.getPassword());
-        myEntityManagerFactory.getEntityManager().merge(user);
+        entityManager.merge(user);
         return user;
     }
 
@@ -57,7 +66,7 @@ public class UserController {
     @DeleteMapping(path = "/delete/{id}", produces = "application/json")
     public long deleteUser(@PathVariable long id) {
         User User = entityManager.find(User.class, id);
-        myEntityManagerFactory.getEntityManager().remove(User);
+        entityManager.remove(User);
         return User.getId();
     }
 
