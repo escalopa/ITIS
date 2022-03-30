@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("role")
+@RequestMapping("roles")
 public class RoleController {
 
     @PersistenceContext
